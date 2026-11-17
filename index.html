@@ -50,7 +50,6 @@ async function deleteClaim(id){
  const password=prompt('Voer het wachtwoord in om deze claim te verwijderen:');
  if(password===null)return;
  if(password!=='Penis'){showToast('Onjuist wachtwoord.');return}
- if(prompt('Weet je het zeker? Typ VERWIJDER om door te gaan:')!=='VERWIJDER'){showToast('Verwijderen geannuleerd.');return}
  const {error}=await db.from('claims').delete().eq('id',id);
  if(error){console.error(error);showToast('Verwijderen is niet gelukt. Controleer de Supabase-toegangsregels.');return}
  await loadClaims();showToast('Claim verwijderd.');
