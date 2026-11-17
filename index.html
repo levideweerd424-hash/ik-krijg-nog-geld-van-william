@@ -58,12 +58,7 @@ async function loadClaims(){
  $('entries').innerHTML='<div class="empty">Claims laden…</div>';
  const {data,error}=await db.from('claims').select('*').order('created_at',{ascending:true});
  if(error){console.error(error);$('entries').innerHTML='<div class="empty">De gedeelde claims konden niet worden geladen. Controleer de Supabase-tabel en toegangsregels.</div>';showToast('Databasefout bij het laden.');return}
- if(data.length===0){
-  const {error:seedError}=await db.from('claims').insert(initial);
-  if(seedError){console.error(seedError);showToast('De beginclaims konden niet worden toegevoegd.');claims=[];render();return}
-  const {data:seeded,error:reloadError}=await db.from('claims').select('*').order('created_at',{ascending:true});
-  if(reloadError){console.error(reloadError);claims=[]}else claims=seeded||[];
- }else claims=data;
+ claims=data||[];
  render();
 }
 $('claimForm').addEventListener('submit',async e=>{
