@@ -38,8 +38,21 @@ function render(){
   const st=document.createElement('span');st.className='status '+(c.status==='paid'?'paid':c.status==='disputed'?'disputed':'');
   st.textContent=c.status==='paid'?'Betaald':c.status==='disputed'?'Betwist':'Openstaand';
   info.append(name,reason,st);const amt=document.createElement('div');amt.className='entry-amount';amt.textContent=euro(Number(c.amount));
-  row.append(av,info,amt);root.append(row);
+  row.append(av,info,amt);
+  const del=document.createElement('button');del.type='button';del.textContent='Verwijderen';del.className='delete-claim';
+  del.style.cssText='margin-left:12px;padding:7px 10px;border:1px solid #d8d8d8;border-radius:8px;background:transparent;color:inherit;font:inherit;font-size:12px;cursor:pointer';
+  del.addEventListener('click',()=>deleteClaim(c.id));
+  row.append(del);root.append(row);
  });
+}
+async function deleteClaim(id){
+ const password=prompt('Voer het wachtwoord in om deze claim te verwijderen:');
+ if(password===null)return;
+ if(password!=='Penis'){showToast('Onjuist wachtwoord.');return}
+ if(prompt('Weet je het zeker? Typ VERWIJDER om door te gaan:')!=='VERWIJDER'){showToast('Verwijderen geannuleerd.');return}
+ const {error}=await db.from('claims').delete().eq('id',id);
+ if(error){console.error(error);showToast('Verwijderen is niet gelukt. Controleer de Supabase-toegangsregels.');return}
+ await loadClaims();showToast('Claim verwijderd.');
 }
 async function loadClaims(){
  $('entries').innerHTML='<div class="empty">Claims laden…</div>';
